@@ -13,6 +13,6 @@ public class TTTControllerTest {
     TTTController controller = new TTTController();
     request.stubRequest("GET", "/");
     String code = controller.handle(request).getResponseLine().get("code");
-    assertEquals(code, "200");
+    assertEquals("200", code);
   }
 }

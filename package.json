@@ -1,0 +1,9 @@
+{
+  "name": "atm-machine",
+  "description": "Coffeescript code kata",
+  "version": "0.0.0-ignored",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-contrib-coffee": "0.10.1"
+  }
+}

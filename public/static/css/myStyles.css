@@ -1,0 +1,79 @@
+#options{
+  padding-top: 1.5%;
+  text-align: center;
+  padding-bottom: 1.5%;
+}
+
+#game{
+  margin-top: 2.5%;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.option {
+  width: 100%;
+  display: block;
+  float:left;
+  width: 23.8%;
+}
+
+.row {
+  width: 100%;
+}
+
+.boardPiece{
+  display: block;
+  float:left;
+  padding-bottom: 30%;
+  border: solid black 1px;
+  width: 32.26%;
+}
+
+.cross{
+  background-image:url('../img/cross.png');
+  background-size: 75% 75%;
+  background-repeat:no-repeat;
+  background-position: center;
+}
+
+.circle{
+  background-image:url('../img/circle.png');
+  background-size: 100% 100%;
+  background-repeat:no-repeat;
+  background-position: center;
+}
+
+@media only screen and (max-width: 720px) {
+
+  #game{
+    margin-left: 12.5%;
+    width: 75%;
+    margin-top: 48%;
+  }
+
+  .option {
+    text-align: right;
+    width: 67%;
+    padding-bottom: 3%;
+  }
+
+@media only screen and (orientation : landscape) {
+
+  #options {
+    width: 33%;
+    text-align: right;
+    float: left;
+  }
+
+  #new {
+    padding-top: 25%;
+    text-align: center;
+  }
+
+  #game {
+    margin: 0;
+    width: 50%;
+    float: right;
+    margin-right: 10%;
+    margin-top: 1%;
+  }
