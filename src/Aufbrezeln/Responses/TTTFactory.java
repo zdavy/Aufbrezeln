@@ -16,7 +16,6 @@ public class TTTFactory extends UmweltFactory {
     response = new UmweltResponse();
     set200();
     response.setHeader("Content-Type", getMIMEType(extend(request)));
-    System.out.println(extend(request));
     getFile(extend(request));
     return response;
   }

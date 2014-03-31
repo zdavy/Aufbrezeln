@@ -14,7 +14,6 @@ public class AssetController extends UmweltController {
 
   @Override
   public boolean valid(iRequest request) {
-    System.out.println(new File(DIR + request.uri()).exists() && !request.uri().equals("/"));
     return new File(DIR + request.uri()).exists() && !request.uri().equals("/");
   }
 
