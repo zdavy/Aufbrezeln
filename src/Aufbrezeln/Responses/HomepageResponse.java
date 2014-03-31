@@ -3,6 +3,7 @@ package Aufbrezeln.Responses;
 import dasBoot.Requests.iRequest;
 import dasBoot.Responses.iResponse;
 
+import umwelt.Responses.UmweltFactory;
 import umwelt.Responses.UmweltResponse;
 
 public class HomepageResponse extends UmweltResponse {
@@ -17,7 +18,7 @@ public class HomepageResponse extends UmweltResponse {
   @Override
   public iResponse proccess(iRequest request) {
     try{
-      return new TTTFactory(DIR).get(HOMEPAGE);
+      return new UmweltFactory(DIR).get(HOMEPAGE);
     } catch (Exception e) {
       setStatus("500", "Internal Server Error");
       setVersion("HTML/1.1");
