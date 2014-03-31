@@ -9,7 +9,7 @@ import umwelt.Controllers.UmweltController;
 
 public class AssetController extends UmweltController {
   public AssetController(String dir) {
-    DIR = dir + "/public/";
+    DIR = dir + "/public/static/";
   }
 
   @Override
