@@ -14,11 +14,12 @@ class TTT.Board
       @startNewGame()
 
   startNewGame: =>
-    TTT.Service.postNewGame @gameRules, (newGame) =>
-      @updateGame(newGame)
+    console.log(TTT.Service.postNewGame @gameRules, (newGame) =>
+      @updateGame(newGame))
     @bindGameBoard()
 
   updateGame: (gameData) ->
+    console.log("nope")
     @updateBoard(gameData["board"])
     @assignTurn(gameData["turn"])
     @view.sync(gameData)

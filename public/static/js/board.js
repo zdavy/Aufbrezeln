@@ -27,15 +27,16 @@
     };
 
     Board.prototype.startNewGame = function() {
-      TTT.Service.postNewGame(this.gameRules, (function(_this) {
+      console.log(TTT.Service.postNewGame(this.gameRules, (function(_this) {
         return function(newGame) {
           return _this.updateGame(newGame);
         };
-      })(this));
+      })(this)));
       return this.bindGameBoard();
     };
 
     Board.prototype.updateGame = function(gameData) {
+      console.log("nope");
       this.updateBoard(gameData["board"]);
       this.assignTurn(gameData["turn"]);
       return this.view.sync(gameData);

@@ -1,9 +1,11 @@
 (function() {
   TTT.Service = {
     postNewGame: function(rules, fn) {
+      console.log("postNewGame");
       return this._post("/game/new-game", rules, fn);
     },
     postMove: function(rules, index, fn) {
+      console.log("postMove");
       rules["gameMove"] = index;
       return this._post("/game/make-move", rules, fn);
     },
