@@ -2,36 +2,35 @@ package test.Controllers;
 
 import org.junit.Test;
 
-import dasBoot.Responses.iResponse;
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 import mocks._Request;
+import static org.junit.Assert.*;
 import Aufbrezeln.Controllers.TTTController;
-import Aufbrezeln.Responses.*;
 
 
 public class TTTControllerTest {
-  @Test public void returnsIndexWhenNoHomeRouteCalled() throws Exception {
+  @Test public void returnsIndexWhenNoRouteCalled() throws Exception {
     _Request request = new _Request();
     TTTController controller = new TTTController();
     request.stubRequest("GET", "/");
     String code = controller.handle(request).getResponseLine().get("code");
+    String contentType = controller.handle(request).getHeader().get("Content-Type");
     assertEquals("200", code);
+    assertTrue(contentType.equals("text/html"));
   }
 
-  @Test public void returnsClojureJSONNewGameResponseWhenRequested() throws Exception {
+  @Test public void JSONNewGameResponseWhenRequested() throws Exception {
     _Request request = new _Request();
     TTTController controller = new TTTController();
     request.stubRequest("POST", "/game/new-game");
-    iResponse response = controller.handle(request);
-    assertThat(response, instanceOf(ClojureJSONNewGame.class));
+    String contentType = controller.handle(request).getHeader().get("Content-Type");
+    assertTrue(contentType.equals("application/json"));
   }
 
-  @Test public void returnsClojureJSONMakeMoveResponseWhenRequested() throws Exception {
+  @Test public void JSONMakeMoveResponseWhenRequested() throws Exception {
     _Request request = new _Request();
     TTTController controller = new TTTController();
     request.stubRequest("POST", "/game/make-move");
-    iResponse response = controller.handle(request);
-    assertThat(response, instanceOf(ClojureJSONMakeMove.class));
+    String contentType = controller.handle(request).getHeader().get("Content-Type");
+    assertTrue(contentType.equals("application/json"));
   }
 }

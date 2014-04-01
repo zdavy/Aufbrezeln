@@ -1,5 +1,7 @@
 package mocks;
 
+import java.util.Hashtable;
+
 import dasBoot.Requests.iRequest;
 
 public class _Request implements iRequest {
@@ -10,6 +12,10 @@ public class _Request implements iRequest {
 
   public String method() {
     return method;
+  }
+
+  public Hashtable<String, String> getBody() {
+    return new Hashtable<String, String>();
   }
 
   public void stubMethod(String stub) {
@@ -29,7 +35,7 @@ public class _Request implements iRequest {
     stubURI(stubURI);
   }
 
-  public String body(String _) {
+  public String body(String noop) {
     return body;
   }
 
@@ -49,7 +55,7 @@ public class _Request implements iRequest {
     return "HTML/1.1";
   }
 
-  public String header(String _) {
+  public String header(String noop) {
     return "header";
   }
 

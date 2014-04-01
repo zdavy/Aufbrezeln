@@ -1,12 +1,15 @@
 (function() {
   TTT.Service = {
     postNewGame: function(rules, fn) {
-      console.log("postNewGame");
       return this._post("/game/new-game", rules, fn);
     },
     postMove: function(rules, index, fn) {
-      console.log("postMove");
+      var board;
       rules["gameMove"] = index;
+      console.log(rules);
+      board = rules["gameBoard"];
+      rules["gameBoard"] = JSON.stringify(board);
+      console.log(rules);
       return this._post("/game/make-move", rules, fn);
     },
     _post: function(url, data, callback) {

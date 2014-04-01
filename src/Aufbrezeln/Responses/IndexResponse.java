@@ -18,6 +18,9 @@ public class IndexResponse extends UmweltResponse {
   public iResponse proccess(iRequest request) {
     try{
       return new UmweltFactory(DIR).get(HOMEPAGE);
-    } catch (Exception e) { return this; }
+    } catch (Exception e) {
+      setStatus("404", "Not Found");
+      return this;
+    }
   }
 }
