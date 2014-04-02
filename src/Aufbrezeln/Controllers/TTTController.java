@@ -1,6 +1,7 @@
 package Aufbrezeln.Controllers;
 
 import Aufbrezeln.Responses.*;
+import Aufbrezeln.Responses.JSON.*;
 
 import umwelt.Controllers.UmweltController;
 

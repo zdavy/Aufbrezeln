@@ -2,8 +2,12 @@ package test.Controllers;
 
 import org.junit.Test;
 
+import dasBoot.Responses.iResponse;
+
 import mocks._Request;
+
 import static org.junit.Assert.*;
+
 import Aufbrezeln.Controllers.TTTController;
 
 
@@ -12,9 +16,12 @@ public class TTTControllerTest {
     _Request request = new _Request();
     TTTController controller = new TTTController();
     request.stubRequest("GET", "/");
-    String code = controller.handle(request).getResponseLine().get("code");
-    String contentType = controller.handle(request).getHeader().get("Content-Type");
+    iResponse response = controller.handle(request);
+
+    String code = response.getResponseLine().get("code");
     assertEquals("200", code);
+
+    String contentType = response.getHeader().get("Content-Type");
     assertTrue(contentType.equals("text/html"));
   }
 
@@ -22,7 +29,9 @@ public class TTTControllerTest {
     _Request request = new _Request();
     TTTController controller = new TTTController();
     request.stubRequest("POST", "/game/new-game");
-    String contentType = controller.handle(request).getHeader().get("Content-Type");
+    iResponse response = controller.handle(request);
+
+    String contentType = response.getHeader().get("Content-Type");
     assertTrue(contentType.equals("application/json"));
   }
 
@@ -30,7 +39,9 @@ public class TTTControllerTest {
     _Request request = new _Request();
     TTTController controller = new TTTController();
     request.stubRequest("POST", "/game/make-move");
-    String contentType = controller.handle(request).getHeader().get("Content-Type");
+    iResponse response = controller.handle(request);
+
+    String contentType = response.getHeader().get("Content-Type");
     assertTrue(contentType.equals("application/json"));
   }
 }

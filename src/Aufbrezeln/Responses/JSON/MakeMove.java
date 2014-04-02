@@ -1,13 +1,14 @@
-package Aufbrezeln.Responses;
+package Aufbrezeln.Responses.JSON;
 
 import java.util.Hashtable;
 
-import WebInterface.interact;
+import Aufbrezeln.Responses.JSONResponse;
+import WebInterface.TTTService;
 
 public class MakeMove extends JSONResponse {
 
   @Override
   public String evaluate(Hashtable<String, String> data) {
-    return interact.play(data);
+    return TTTService.play(data);
   }
 }
