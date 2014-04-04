@@ -1,0 +1,12 @@
+.classpath
+.project
+bin
+workbench.xmi
+src/test
+src/mocks
+src/Helpers
+Gruntfile.coffee
+package.json
+scripts
+node_modules
+public/static/support
