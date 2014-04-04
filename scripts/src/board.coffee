@@ -4,8 +4,8 @@ class TTT.Board
   constructor: ->
     @spaces = $(".boardPiece")
     @view = new TTT.BoardView
-  init: ->
-    @bindNewGame()
+
+  init: -> @bindNewGame()
 
   bindNewGame: ->
     $("[data-id='newGame']").on "click", =>
@@ -16,7 +16,7 @@ class TTT.Board
   startNewGame: =>
     TTT.Service.postNewGame @gameRules, (newGame) =>
       @updateGame(newGame)
-    @bindGameBoard()
+      @bindGameBoard()
 
   updateGame: (gameData) ->
     @updateBoard(gameData["board"])
@@ -24,70 +24,68 @@ class TTT.Board
     @view.sync(gameData)
 
   getWinner: (results) ->
-    if (results.winner == "draw")
-      alert("The game is a draw, nobody wins")
-    else
-      alert("The winner is #{results.winner}, congrats!")
+    if @draw(results) then drawMessage() else @winMessage(results.winner)
+
+  draw: (results) -> results.winner == "draw"
+  drawMessage: -> alert("The game is a draw, nobody wins")
+  winMessage: (winner) -> _delay -> alert("The winner is #{winner}, congrats!")
 
   bindGameBoard : ->
     @spaces.not(".cross, .circle").on "click", (event) =>
       @spaces.unbind()
-      index = $(event.target).data("index-id")
-      TTT.Service.postMove @gameRules, index, (response) =>
+      TTT.Service.postMove @gameRules, @getIndex(event), (response) =>
         @updateGame(response)
         @checkGameStatus(response)
 
+  getIndex: (event) -> $(event.target).data("index-id")
+
   checkGameStatus: (gameData) ->
-    if gameData["game-over"]
-      @getWinner(gameData)
-    else
-      @bindGameBoard()
+    if gameData["game-over"] then @getWinner(gameData) else @bindGameBoard()
 
-  updateBoard : (board) ->
-    @gameRules.gameBoard = board
+  updateBoard : (board) -> @gameRules.gameBoard = board
 
-  assignTurn: (turn) ->
-    if turn == "player1"
-      @gameRules.gameTurn = "first-player"
-    else
-      @gameRules.gameTurn = "second-player"
+  assignTurn: (turn) -> if turn == "player1" then @firstTurn() else @secondTurn()
+  firstTurn: -> @gameRules.gameTurn = "first-player"
+  secondTurn: -> @gameRules.gameTurn = "second-player"
 
   assignGameRules: =>
     @gameRules = {
-      gameMode: $("[data-id='gameMode']").val()
-      gameTurn: $("[data-id='gameTurn']").val()
       gameDifficulty: $("[data-id='gameDifficulty']").val()
+      gameMode:       $("[data-id='gameMode']").val()
+      gameTurn:       $("[data-id='gameTurn']").val()
     }
 
 class TTT.BoardView
-  reset: ->
-    for index in [0..8]
-      @removeClass(index)
-
   sync: (gameData) ->
-    @reset()
-    @displayBoard(gameData["board"])
-    @turn = gameData["turn"]
+    @setBoards(gameData["board"])
+    @setTurn(gameData["turn"])
+    @displayBoard()
+
+  setTurn: (turn) -> @turn = turn
+  setBoards: (board) -> @oldBoard = @newBoard; @newBoard = board
 
   displayBoard: (board) ->
-    for index in [0..8]
-      @applyClass(board[index], index)
+    @reset()
+    @applyClass(@newBoard[index], index) for index in [0..8]
 
   applyClass: (marker, position) ->
-    if marker == "x"
-      @_applyClass("cross", position)
-    else if marker == "o"
-      @_applyClass("circle", position)
+    @applyCross(position) if marker == "x"
+    if marker == "o"
+      if @played(position) then @applyCircle(position)
+      else _delay => @applyCircle(position)
 
-  _applyClass: (marker, position) ->
-    @space(position).addClass(marker)
+  played: (position) -> @oldBoard[position] == "o"
+  applyCross: (position) -> @_applyClass("cross", position)
+  applyCircle: (position) -> @_applyClass("circle", position)
+  _applyClass: (marker, position) -> @space(position).addClass(marker)
 
-  removeClass: (position) ->
-    @space(position).removeClass("circle")
-    @space(position).removeClass("cross")
+  reset: -> @removeClass(@space(index)) for index in [0..8]
+  removeClass:  (position) -> position.removeClass("cross circle")
 
-  space: (position) ->
-    $("[data-index-id='#{position}'")
+  space: (position) -> $("[data-index-id='#{position}'")
+
+_delay = (fn, args...) ->
+  setTimeout fn, 500, args...
 
 window.TTT.Board = TTT.Board
 window.TTT.BoardView = TTT.BoardView

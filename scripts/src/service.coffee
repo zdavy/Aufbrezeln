@@ -3,11 +3,8 @@ TTT.Service =
     @_post("/game/new-game", rules, fn)
 
   postMove: (rules, index, fn) ->
-    rules["gameMove"] = index
-    console.log(rules)
-    board = rules["gameBoard"]
-    rules["gameBoard"] = JSON.stringify(board)
-    console.log(rules)
+    rules["gameBoard"] = JSON.stringify(rules["gameBoard"])
+    rules["gameMove"]  = index
     @_post("/game/make-move", rules, fn)
 
   _post: ( url, data, callback) ->

@@ -28,7 +28,7 @@
     });
     return describe("Making a move", function() {
       it("passes the index from the div clicked to the postMove service", function() {
-        newGame();
+        board.bindGameBoard();
         $("[data-index-id='0']").click();
         return expect(TTT.Service.postMove).toHaveBeenCalled();
       });

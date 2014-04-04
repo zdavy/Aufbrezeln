@@ -32,7 +32,7 @@ describe "Board", ->
 
   describe "Making a move", ->
     it "passes the index from the div clicked to the postMove service", ->
-      newGame()
+      board.bindGameBoard()
       $("[data-index-id='0']").click()
       expect(TTT.Service.postMove).toHaveBeenCalled()
     it "doesn't accept clicks on already take spaces", ->

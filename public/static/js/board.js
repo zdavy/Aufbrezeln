@@ -1,6 +1,7 @@
 (function() {
-  var TTT,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var TTT, _delay,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __slice = [].slice;
 
   TTT = window.TTT = {};
 
@@ -27,12 +28,12 @@
     };
 
     Board.prototype.startNewGame = function() {
-      TTT.Service.postNewGame(this.gameRules, (function(_this) {
+      return TTT.Service.postNewGame(this.gameRules, (function(_this) {
         return function(newGame) {
-          return _this.updateGame(newGame);
+          _this.updateGame(newGame);
+          return _this.bindGameBoard();
         };
       })(this));
-      return this.bindGameBoard();
     };
 
     Board.prototype.updateGame = function(gameData) {
@@ -42,25 +43,41 @@
     };
 
     Board.prototype.getWinner = function(results) {
-      if (results.winner === "draw") {
-        return alert("The game is a draw, nobody wins");
+      if (this.draw(results)) {
+        return drawMessage();
       } else {
-        return alert("The winner is " + results.winner + ", congrats!");
+        return this.winMessage(results.winner);
       }
+    };
+
+    Board.prototype.draw = function(results) {
+      return results.winner === "draw";
+    };
+
+    Board.prototype.drawMessage = function() {
+      return alert("The game is a draw, nobody wins");
+    };
+
+    Board.prototype.winMessage = function(winner) {
+      return _delay(function() {
+        return alert("The winner is " + winner + ", congrats!");
+      });
     };
 
     Board.prototype.bindGameBoard = function() {
       return this.spaces.not(".cross, .circle").on("click", (function(_this) {
         return function(event) {
-          var index;
           _this.spaces.unbind();
-          index = $(event.target).data("index-id");
-          return TTT.Service.postMove(_this.gameRules, index, function(response) {
+          return TTT.Service.postMove(_this.gameRules, _this.getIndex(event), function(response) {
             _this.updateGame(response);
             return _this.checkGameStatus(response);
           });
         };
       })(this));
+    };
+
+    Board.prototype.getIndex = function(event) {
+      return $(event.target).data("index-id");
     };
 
     Board.prototype.checkGameStatus = function(gameData) {
@@ -77,17 +94,25 @@
 
     Board.prototype.assignTurn = function(turn) {
       if (turn === "player1") {
-        return this.gameRules.gameTurn = "first-player";
+        return this.firstTurn();
       } else {
-        return this.gameRules.gameTurn = "second-player";
+        return this.secondTurn();
       }
+    };
+
+    Board.prototype.firstTurn = function() {
+      return this.gameRules.gameTurn = "first-player";
+    };
+
+    Board.prototype.secondTurn = function() {
+      return this.gameRules.gameTurn = "second-player";
     };
 
     Board.prototype.assignGameRules = function() {
       return this.gameRules = {
+        gameDifficulty: $("[data-id='gameDifficulty']").val(),
         gameMode: $("[data-id='gameMode']").val(),
-        gameTurn: $("[data-id='gameTurn']").val(),
-        gameDifficulty: $("[data-id='gameDifficulty']").val()
+        gameTurn: $("[data-id='gameTurn']").val()
       };
     };
 
@@ -98,45 +123,75 @@
   TTT.BoardView = (function() {
     function BoardView() {}
 
-    BoardView.prototype.reset = function() {
-      var index, _i, _results;
-      _results = [];
-      for (index = _i = 0; _i <= 8; index = ++_i) {
-        _results.push(this.removeClass(index));
-      }
-      return _results;
+    BoardView.prototype.sync = function(gameData) {
+      this.setBoards(gameData["board"]);
+      this.setTurn(gameData["turn"]);
+      return this.displayBoard();
     };
 
-    BoardView.prototype.sync = function(gameData) {
-      this.reset();
-      this.displayBoard(gameData["board"]);
-      return this.turn = gameData["turn"];
+    BoardView.prototype.setTurn = function(turn) {
+      return this.turn = turn;
+    };
+
+    BoardView.prototype.setBoards = function(board) {
+      this.oldBoard = this.newBoard;
+      return this.newBoard = board;
     };
 
     BoardView.prototype.displayBoard = function(board) {
       var index, _i, _results;
+      this.reset();
       _results = [];
       for (index = _i = 0; _i <= 8; index = ++_i) {
-        _results.push(this.applyClass(board[index], index));
+        _results.push(this.applyClass(this.newBoard[index], index));
       }
       return _results;
     };
 
     BoardView.prototype.applyClass = function(marker, position) {
       if (marker === "x") {
-        return this._applyClass("cross", position);
-      } else if (marker === "o") {
-        return this._applyClass("circle", position);
+        this.applyCross(position);
       }
+      if (marker === "o") {
+        if (this.played(position)) {
+          return this.applyCircle(position);
+        } else {
+          return _delay((function(_this) {
+            return function() {
+              return _this.applyCircle(position);
+            };
+          })(this));
+        }
+      }
+    };
+
+    BoardView.prototype.played = function(position) {
+      return this.oldBoard[position] === "o";
+    };
+
+    BoardView.prototype.applyCross = function(position) {
+      return this._applyClass("cross", position);
+    };
+
+    BoardView.prototype.applyCircle = function(position) {
+      return this._applyClass("circle", position);
     };
 
     BoardView.prototype._applyClass = function(marker, position) {
       return this.space(position).addClass(marker);
     };
 
+    BoardView.prototype.reset = function() {
+      var index, _i, _results;
+      _results = [];
+      for (index = _i = 0; _i <= 8; index = ++_i) {
+        _results.push(this.removeClass(this.space(index)));
+      }
+      return _results;
+    };
+
     BoardView.prototype.removeClass = function(position) {
-      this.space(position).removeClass("circle");
-      return this.space(position).removeClass("cross");
+      return position.removeClass("cross circle");
     };
 
     BoardView.prototype.space = function(position) {
@@ -146,6 +201,12 @@
     return BoardView;
 
   })();
+
+  _delay = function() {
+    var args, fn;
+    fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    return setTimeout.apply(null, [fn, 500].concat(__slice.call(args)));
+  };
 
   window.TTT.Board = TTT.Board;
 
