@@ -205,7 +205,7 @@
   _delay = function() {
     var args, fn;
     fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    return setTimeout.apply(null, [fn, 500].concat(__slice.call(args)));
+    return setTimeout.apply(null, [fn, 100].concat(__slice.call(args)));
   };
 
   window.TTT.Board = TTT.Board;

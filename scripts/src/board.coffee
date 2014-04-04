@@ -85,7 +85,7 @@ class TTT.BoardView
   space: (position) -> $("[data-index-id='#{position}'")
 
 _delay = (fn, args...) ->
-  setTimeout fn, 500, args...
+  setTimeout fn, 100, args...
 
 window.TTT.Board = TTT.Board
 window.TTT.BoardView = TTT.BoardView
